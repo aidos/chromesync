@@ -30,20 +30,22 @@ slashes are the same).
 
 
 ## Run
-Start Chrome with the remote debugger (I run on a virtual machine by
-tunnelling the debugger traffic).
-
-On a mac it's the following (not sure on linux):
+Start Chrome with the remote debugger. On a mac it's the following (not sure on linux):
 
     /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
-    --remote-debugging-port=2100
+    --remote-debugging-port=9222
 
-    ssh -R 2100:localhost:9222 up
+Run the watcher
+
+    # If you want to tunnel the traffic to a virtual machine (as I do).
+    # ssh -R 9222:localhost:9222 up
 
     $ python
     >>> import sync
-    >>> cw = sync.ChromeWatch(2100)
-    
+    >>> cw = sync.ChromeWatch()
+
+To stop
+
     >>> # To stop you need to run this before leaving ipython
     >>> # otherwise the threads will hang and you'll have to manually kill
     >>> cw.stop()
