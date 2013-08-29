@@ -2,7 +2,7 @@
 """
 ChromeSync - Update Google Chrome with changed files
 
-Copyright (C) 2010 Aidan Kane (aidos)
+Copyright (C) 2013 Aidan Kane (aidos)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
