@@ -38,7 +38,7 @@ Start Chrome with the remote debugger. On a mac it's the following (not sure on 
 Run the watcher
 
     # If you want to tunnel the traffic to a virtual machine (as I do).
-    # ssh -R 9222:localhost:9222 up
+    # ssh -R 9222:localhost:9222 your_machine
 
     $ python
     >>> import sync
