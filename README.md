@@ -52,7 +52,7 @@ To stop
 
 
 ## TODO
-Handle websocket connections breaking (because someone uses the inspector)
-Watch Chrome for new tabs / tabs closing
-Multiple urls could map to the same file (not handled at the moment)
+- Handle websocket connections breaking (because someone uses the inspector)
+- Watch Chrome for new tabs / tabs closing
+- Multiple urls could map to the same file (not handled at the moment)
 
