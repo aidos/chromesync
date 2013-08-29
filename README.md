@@ -1,8 +1,13 @@
 
-# ChromeSync
-Keep scripts in Google Chrome in sync with your filesystem
+# Chrome Sync
+Keep scripts in Google Chrome in sync with your filesystem. Uses the Chrome
+Remote Debugger to check which scripts are in use in the browser and to
+update them when the files change.
 
-You can add feature requests or bugs to https://github.com/aidos/ChromeSync/issues
+It's great for those of us who are doing a lot of frontend work. I built it for
+my AngularJS projects.
+
+Bug reports to https://github.com/aidos/ChromeSync/issues
 
 
 ## Note
@@ -10,11 +15,11 @@ This is in very eary stages - use at your own risk. It could totally
 kill your cat. I only just got it working and have barely tested it - there
 are bound to be a million issues.
 
-The main gist of the code come from the Sublime Plugin that interfaces
-with Chrome. We're using their WIP and websocket code.
+The Chrome interfacing code comes from the Sublime Plugin. We're using their
+WIP and websocket code. Do whatever you want with the rest of the code.
 
 This uses inotify which is a linux only api. It's not going to work on any
-other platform.
+other platform (without a lot more work).
 
 
 ## Install
