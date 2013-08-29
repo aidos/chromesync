@@ -40,7 +40,7 @@ On a mac it's the following (not sure on linux):
 
     ssh -R 2100:localhost:9222 up
 
-    $ ipython
+    $ python
     >>> import sync
     >>> cw = sync.ChromeWatch(2100)
     
