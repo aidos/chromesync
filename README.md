@@ -7,7 +7,8 @@ You can add feature requests or bugs to https://github.com/aidos/ChromeSync/issu
 
 ## Note
 This is in very eary stages - use at your own risk. It could totally
-kill your cat.
+kill your cat. I only just got it working and have barely tested it - there
+are bound to be a million issues.
 
 The main gist of the code come from the Sublime Plugin that interfaces
 with Chrome. We're using their WIP and websocket code.
@@ -24,15 +25,19 @@ slashes are the same).
 
 
 ## Run
-Start Chrome with the remote debugger
+Start Chrome with the remote debugger (I run on a virtual machine by
+tunnelling the debugger traffic).
+
 On a mac it's the following (not sure on linux):
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
---remote-debugging-port=9222
+
+    /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+    --remote-debugging-port=2100
+
+    ssh -R 2100:localhost:9222 up
 
     $ ipython
-    >>> # At the moment just run for a single tab
     >>> import sync
-    >>> cw = sync.ChromeWatch()
+    >>> cw = sync.ChromeWatch(2100)
     
     >>> # To stop you need to run this before leaving ipython
     >>> # otherwise the threads will hang and you'll have to manually kill
@@ -41,4 +46,6 @@ On a mac it's the following (not sure on linux):
 
 ## TODO
 Handle websocket connections breaking (because someone uses the inspector)
+Watch Chrome for new tabs / tabs closing
+Multiple urls could map to the same file (not handled at the moment)
 
