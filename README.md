@@ -1,5 +1,6 @@
 
-# ChromeSync - Keep scripts in Google Chrome in sync with your filesystem
+# ChromeSync
+Keep scripts in Google Chrome in sync with your filesystem
 
 You can add feature requests or bugs to https://github.com/aidos/ChromeSync/issues
 
@@ -28,14 +29,14 @@ On a mac it's the following (not sure on linux):
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
 --remote-debugging-port=9222
 
-$ ipython
->>> # At the moment just run for a single tab
->>> import sync
->>> cw = sync.ChromeWatch()
-
->>> # To stop you need to run this before leaving ipython
->>> # otherwise the threads will hang and you'll have to manually kill
->>> cw.stop()
+    $ ipython
+    >>> # At the moment just run for a single tab
+    >>> import sync
+    >>> cw = sync.ChromeWatch()
+    
+    >>> # To stop you need to run this before leaving ipython
+    >>> # otherwise the threads will hang and you'll have to manually kill
+    >>> cw.stop()
 
 
 ## TODO
