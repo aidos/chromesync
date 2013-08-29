@@ -8,14 +8,15 @@ https://github.com/sokolovstas/SublimeWebInspector
 """
 
 import logging
-import os.path
 import threading
 import json
 
 import websocket
-import wip
-import wip.Debugger
 
+
+logging.basicConfig()
+logger = logging.getLogger('ChromeSync')
+logger.setLevel(logging.INFO)
 
 
 
