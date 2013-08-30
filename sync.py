@@ -36,7 +36,7 @@ from swi import Protocol
 
 logging.basicConfig()
 logger = logging.getLogger('ChromeSync')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 
@@ -54,22 +54,46 @@ class ChromeWatch():
 
     def __init__(self, port=9222):
         self.port = port
+
         c = config.Config()
         self.mappings = c.mappings
+
         self.protocols = dict()
+        self.protocol_lock = threading.RLock()
+
+        self.watch_chrome = True
+        self.poll_timer = None
+        self.poll_for_pages()
+
+    def poll_for_pages(self):
+        """Called periodically - finds news pages/tabs in Chrome."""
+
+        if not self.watch_chrome:
+            return
 
         # create a protocol for every page / tab
-        self.pages = get_page_list(self.port)
-        for p in self.pages:
-            ws = p['webSocketDebuggerUrl']
-            self.protocols[ws] = TabWatch(ws, self.mappings)
+        pages = get_page_list(self.port)
+        for p in pages:
+            if 'webSocketDebuggerUrl' in p:
+                ws = p['webSocketDebuggerUrl']
+                with self.protocol_lock:
+                    if ws not in self.protocols:
+                        self.protocols[ws] = TabWatch(ws, self.mappings)
 
-        # TODO: need to poll Chrome to find new tabs
+        self.poll_timer = threading.Timer(5.0, self.poll_for_pages)
+        self.poll_timer.start()
 
     def stop(self):
         """You really need to do this to stop things from hanging on exit."""
-        for p in self.protocols.values():
-            p.stop()
+
+        self.watch_chrome = False
+        if self.poll_timer:
+            self.poll_timer.cancel()
+
+        with self.protocol_lock:
+            for p in self.protocols.values():
+                p.stop()
+            p = dict()
 
 
 
@@ -95,6 +119,9 @@ class TabWatch(object):
         # note: we actually have to watch the directory above the file
         self.create_file_watcher()
 
+        # by default we reconnect to Chrome if we los the connection
+        self.keep_alive = True
+        self.timer_reconnect = None
 
     def create_file_watcher(self):
         """Seperate thread to track files being modified."""
@@ -156,7 +183,7 @@ class TabWatch(object):
     def on_script_modified(self, path):
         """Called whenever a watched script on the filesystem is updated."""
 
-        logger.debug('File Modified: %s' % path)
+        logger.info('File Modified: %s' % path)
 
         # because we're watching a whole directory we'll be notified about
         # files we don't actually want to watch
@@ -190,12 +217,21 @@ class TabWatch(object):
         p = Protocol()
         p.subscribe(wip.Debugger.scriptParsed(), self.on_script_parsed)
         p.subscribe(wip.Debugger.globalObjectCleared(), self.on_page_reloaded)
-        p.connect(self.websocket, self.on_chrome_connected,
-                  self.on_chrome_disconnected)
         self.protocol = p
+
+        self.protocol_connect()
+
+    def protocol_connect(self):
+        self.protocol.connect(self.websocket, self.on_chrome_connected,
+                              self.on_chrome_disconnected)
 
     def stop(self):
         """Kill off the child threads (watching chrome and watching files)."""
+
+        self.keep_alive = False
+
+        if self.timer_reconnect:
+            self.timer_reconnect.cancel()
 
         if self.protocol:
             self.protocol.disconnect()
@@ -205,12 +241,19 @@ class TabWatch(object):
             self.file_notifier.stop()
 
     def on_chrome_connected(self):
+        """Connected to Chrome - make sure it's sending us debug info."""
         self.protocol.send(wip.Debugger.enable())
 
     def on_chrome_disconnected(self):
-        # TODO: need to track the disconnect
-        # parent will need to reconnect us - can we reuse the same protocol?
-        pass
+        """Our job is to keep the connection to Chrome alive."""
+
+        if not self.keep_alive:
+            return
+
+        def attempt_reconnect():
+            self.protocol_connect()
+        self.timer_reconnect = threading.Timer(2.0, attempt_reconnect)
+        self.timer_reconnect.start()
 
     def on_page_reloaded(self, data, notification):
         """Called from Chrome everytime the page is reloaded."""

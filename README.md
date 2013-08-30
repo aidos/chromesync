@@ -52,7 +52,6 @@ To stop
 
 
 ## TODO
-- Handle websocket connections breaking (because someone uses the inspector)
-- Watch Chrome for new tabs / tabs closing
+- Deal with clean up after a tab is closed completely
 - Multiple urls could map to the same file (not handled at the moment)
 

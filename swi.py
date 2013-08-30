@@ -5,6 +5,8 @@ This code comes from Sublime Web Inspector (SWI)
 
 https://github.com/sokolovstas/SublimeWebInspector
 
+I've made a few modifications - mostly around printing / logging
+
 """
 
 import logging
