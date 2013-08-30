@@ -36,7 +36,7 @@ from swi import Protocol
 
 logging.basicConfig()
 logger = logging.getLogger('ChromeSync')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 
